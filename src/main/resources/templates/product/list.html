@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - CRUD Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #007bff;
+        }
+        .container-main {
+            margin-top: 30px;
+        }
+        .btn-custom {
+            margin-bottom: 20px;
+        }
+        .alert {
+            margin-top: 20px;
+        }
+        .product-table {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/products">Product CRUD</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container container-main">
+        <!-- Alert Messages -->
+        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${message}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h1>Products</h1>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="/products/create" class="btn btn-primary btn-custom">+ Add New Product</a>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <form method="get" action="/products" class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search by product name..." 
+                           th:value="${search}">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    <a href="/products" class="btn btn-outline-secondary">Clear</a>
+                </form>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="product-table">
+            <div th:if="${products.isEmpty()}" class="alert alert-info m-3">
+                No products found. <a href="/products/create">Create one now</a>!
+            </div>
+            <table class="table table-hover mb-0" th:unless="${products.isEmpty()}">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product : ${products}">
+                        <td th:text="${product.id}"></td>
+                        <td th:text="${product.name}"></td>
+                        <td th:text="${product.category}"></td>
+                        <td th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></td>
+                        <td th:text="${product.quantity}"></td>
+                        <td>
+                            <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-sm btn-info">View</a>
+                            <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn btn-sm btn-warning">Edit</a>
+                            <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn btn-sm btn-danger" 
+                               onclick="return confirm('Are you sure?')">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
